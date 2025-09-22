@@ -18,3 +18,13 @@ uvicorn==0.35.0
 structlog==25.4.0
 openai
 tiktoken
+langgraph
+ragas
+
+langchain_ollama
+
+langchain-mcp-adapters
+mcp
+ddgs
+
+-e .

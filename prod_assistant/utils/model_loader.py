@@ -2,14 +2,15 @@ import os
 import sys
 import json
 from dotenv import load_dotenv
-from prod_assistant.utils.config_loader import load_config
+from utils.config_loader import load_config
 from langchain_google_genai import GoogleGenerativeAIEmbeddings, ChatGoogleGenerativeAI
 from langchain_community.embeddings import OpenAIEmbeddings
 from langchain_groq import ChatGroq
-from prod_assistant.logger import GLOBAL_LOGGER as log
-from prod_assistant.exception.custom_exception import ProductAssistantException
+from logger import GLOBAL_LOGGER as log
+from exception.custom_exception import ProductAssistantException
 import asyncio
 
+from langchain_ollama import ChatOllama
 
 class ApiKeyManager:
     REQUIRED_KEYS = ["GROQ_API_KEY", "GOOGLE_API_KEY"]
@@ -99,7 +100,8 @@ class ModelLoader:
         Load and return the configured LLM model.
         """
         llm_block = self.config["llm"]
-        provider_key = os.getenv("LLM_PROVIDER", "google")
+        # provider_key = os.getenv("LLM_PROVIDER", "google")
+        provider_key = os.getenv("LLM_PROVIDER", "ollama")
 
         if provider_key not in llm_block:
             log.error("LLM provider not found in config", provider=provider_key)
@@ -126,6 +128,11 @@ class ModelLoader:
                 model=model_name,
                 api_key=self.api_key_mgr.get("GROQ_API_KEY"), #type: ignore
                 temperature=temperature,
+            )
+        elif provider =="ollama":
+            base_url = llm_config.get("base_url")
+            return ChatOllama(
+                model=model_name, base_url=base_url
             )
 
         # elif provider == "openai":

@@ -24,3 +24,11 @@ llm:
     model_name: "gemini-2.0-flash"
     temperature: 0
     max_output_tokens: 2048
+
+  ollama:
+    provider: "ollama"
+    model_name: "qwen3:8b"
+    temperature: 0
+    max_output_tokens: 2048
+    base_url : "http://localhost:11434"
+    
